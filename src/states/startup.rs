@@ -2,6 +2,7 @@ use crate::resources::GameStatus;
 use crate::resources::SpriteResource;
 use crate::resources::WallpaperResource;
 use crate::states::ui::HomeState;
+use crate::states::ui::CustomUi;
 use amethyst::assets::Completion;
 use amethyst::assets::ProgressCounter;
 use amethyst::prelude::*;
@@ -22,10 +23,11 @@ impl StartupState {
 
 impl SimpleState for StartupState {
     fn on_start(&mut self, data: StateData<GameData>) {
-        data.world.exec(|mut creator: UiCreator| {
-            creator.create("ui/confirm.ron", &mut self.progress);
-            creator.create("ui/home.ron", &mut self.progress);
-            creator.create("ui/new_game.ron", &mut self.progress);
+        data.world.exec(|mut creator: UiCreator<'_, CustomUi>| {
+            creator.create("ui/home_v2.ron", &mut self.progress);
+            // creator.create("ui/confirm.ron", &mut self.progress);
+            // creator.create("ui/home.ron", &mut self.progress);
+            // creator.create("ui/new_game.ron", &mut self.progress);
         });
 
         data.world
@@ -41,7 +43,7 @@ impl SimpleState for StartupState {
                 return Trans::None;
             }
             Completion::Complete => {
-                enable_fullscreen_mode(&data.world);
+                // enable_fullscreen_mode(&data.world);
                 complete_startup(&data.world);
                 return Trans::Switch(Box::new(HomeState::new(true)));
             }

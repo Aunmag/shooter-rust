@@ -53,6 +53,7 @@ use amethyst::tiles::RenderTiles2D;
 use amethyst::ui::RenderUi;
 use amethyst::ui::UiBundle;
 use amethyst::utils::application_root_dir;
+use crate::states::ui::CustomUi;
 
 const FRAME_RATE: u32 = 144;
 
@@ -71,7 +72,7 @@ fn main() -> amethyst::Result<()> {
         .with_system_desc(UiResizeSystem::new(), "", &[])
         .with_system_desc(UiTaskSystem, "", &[])
         .with_system_desc(HideHierarchySystemDesc::default(), "", &[]) // TODO: Maybe this system depends on something?
-        .with_bundle(UiBundle::<CustomBindingTypes>::new())?
+        .with_bundle(UiBundle::<CustomBindingTypes, CustomUi>::new())?
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
                 .with_plugin(RenderToWindow::from_config_path(

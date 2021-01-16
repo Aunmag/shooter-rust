@@ -1,0 +1,85 @@
+#![enable(implicit_some)]
+Custom(
+    Root(
+        id: "home",
+        children: [
+            Custom(
+                Space(
+                    layout: Fill(6),
+                )
+            ),
+            Custom(
+                Label(
+                    text: "A Zombie Shooter Game",
+                    layout: Fill(1),
+                    style: Big,
+                )
+            ),
+            Custom(
+                Space(
+                    layout: Fill(2),
+                )
+            ),
+            Custom(
+                Button(
+                    id: "home.continue",
+                    text: "Continue",
+                    layout: Fill(1),
+                )
+            ),
+            // TODO: Make new_game and disconnect on same line
+            Custom(
+                Button(
+                    id: "home.new_game",
+                    text: "New Game",
+                    layout: Fill(1),
+                )
+            ),
+            Custom(
+                Button(
+                    id: "home.disconnect_", // TODO: Fix ID
+                    text: "Disconnect",
+                    layout: Fill(1),
+                )
+            ),
+            Custom(
+                Button(
+                    id: "home.settings",
+                    text: "Settings",
+                    layout: Fill(1),
+                )
+            ),
+            Custom(
+                Button(
+                    id: "home.help",
+                    text: "Help",
+                    layout: Fill(1),
+                )
+            ),
+            Custom(
+                Button(
+                    id: "home.quit",
+                    text: "Quit",
+                    layout: Fill(1),
+                )
+            ),
+            Custom(
+                Space(
+                    layout: Fill(3),
+                )
+            ),
+            Custom(
+                Label(
+                    text: "v0.2.0",
+                    layout: Fill(1),
+                    style: Small,
+                )
+            ),
+            Custom(
+                Space(
+                    layout: Fill(1),
+                )
+            ),
+        ]
+    )
+)
