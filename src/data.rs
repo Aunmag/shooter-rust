@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 pub const VIEW_DISTANCE: f32 = 15.0;
 
 pub const WORLD_SIZE: f32 = 64.0;
@@ -11,3 +13,5 @@ pub const LAYER_ACTOR: f32 = 0.3;
 pub const LAYER_ACTOR_PLAYER: f32 = 0.4;
 pub const LAYER_TREE: f32 = 0.5;
 pub const LAYER_CAMERA: f32 = 1.0;
+
+pub const MAX_PING: Duration = Duration::from_millis(250);

@@ -9,6 +9,7 @@ use crate::components::Terrain;
 use crate::components::TransformSync;
 use crate::components::Weapon;
 use crate::components::WeaponConfig;
+use crate::components::PositionLog;
 use crate::data::LAYER_ACTOR;
 use crate::data::LAYER_ACTOR_PLAYER;
 use crate::data::LAYER_CAMERA;
@@ -137,6 +138,7 @@ pub fn grant_played_actor(
     // TODO: Remove old player entity
     // TODO: Reset layer for old transform
     // TODO: Remove old ghost
+    // TODO: Remove old position log
 
     world
         .write_storage::<Player>()
@@ -150,6 +152,11 @@ pub fn grant_played_actor(
     create_camera(world, actor);
 
     if let GameType::Join(..) = *game_type {
+        world
+            .write_storage::<PositionLog>()
+            .insert(actor, PositionLog::new())
+            .unwrap(); // TODO: No unwrap
+
         // TODO: Maybe make ghost as player's child
         return Some(create_actor(
             world, root, None, 0.0, 0.0, 0.0, true, game_type,

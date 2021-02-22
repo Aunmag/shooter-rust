@@ -21,6 +21,7 @@ use crate::systems::AiSystem;
 use crate::systems::CameraSystem;
 use crate::systems::CollisionSystem;
 use crate::systems::PlayerSystem;
+use crate::systems::PositionLogSystem;
 use crate::systems::ProjectileSystem;
 use crate::systems::TerrainSystem;
 use crate::systems::WeaponSystem;
@@ -90,6 +91,7 @@ impl GameState<'_, '_> {
             GameType::Join(address) => {
                 builder.add(PlayerSystem, "Player", &[]);
                 builder.add(ActorSystem, "Actor", &["Player"]);
+                builder.add(PositionLogSystem::new(), "PositionLog", &["Actor"]);
                 builder.add(InputSendSystem::new(), "InputSend", &["Actor"]);
                 builder.add(ProjectileSystem, "Projectile", &["Actor"]);
                 builder.add(
