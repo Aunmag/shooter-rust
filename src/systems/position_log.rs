@@ -56,7 +56,7 @@ impl<'a> System<'a> for PositionLogSystem {
                 position.y += interpolation.offset_y;
             }
 
-            log.push(position, now);
+            log.store(position, now);
             log.cleanup(cleanup_before)
         }
     }

@@ -1,3 +1,4 @@
+mod circular_vec;
 pub mod math;
 pub mod ui;
 pub mod world;
@@ -8,6 +9,7 @@ use amethyst::ecs::prelude::Entity;
 use amethyst::ecs::prelude::World;
 use amethyst::prelude::*;
 use std::time::Duration;
+pub use self::circular_vec::*;
 
 // TODO: Use `Duration::saturating_sub` in future
 pub fn sub_duration(a: Duration, b: Duration) -> Duration {

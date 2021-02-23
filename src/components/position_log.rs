@@ -21,7 +21,7 @@ impl PositionLog {
         };
     }
 
-    pub fn push(&mut self, position: Vector2<f32>, time: Duration) {
+    pub fn store(&mut self, position: Vector2<f32>, time: Duration) {
         self.data.push_front(Record {
             time,
             position,
@@ -79,10 +79,10 @@ mod tests {
     #[test]
     fn test_find() {
         let mut log = PositionLog::new();
-        log.push(Vector2::new(2.0, 2.2), Duration::from_secs(1));
-        log.push(Vector2::new(8.0, 8.2), Duration::from_secs(4));
-        log.push(Vector2::new(32.0, 32.2), Duration::from_secs(16));
-        log.push(Vector2::new(38.0, 38.2), Duration::from_secs(19));
+        log.store(Vector2::new(2.0, 2.2), Duration::from_secs(1));
+        log.store(Vector2::new(8.0, 8.2), Duration::from_secs(4));
+        log.store(Vector2::new(32.0, 32.2), Duration::from_secs(16));
+        log.store(Vector2::new(38.0, 38.2), Duration::from_secs(19));
 
         // Precise
         assert_eq!(log.find(Duration::from_secs(1)), Some(Vector2::new(2.0, 2.2)));
@@ -105,32 +105,32 @@ mod tests {
     #[test]
     fn test_cleanup() {
         let mut log = PositionLog::new();
-        log.push(Vector2::new(1.0, 1.1), Duration::from_secs(1));
-        log.push(Vector2::new(2.0, 2.1), Duration::from_secs(2));
-        log.push(Vector2::new(3.0, 3.1), Duration::from_secs(3));
-        log.push(Vector2::new(4.0, 4.1), Duration::from_secs(4));
+        log.store(Vector2::new(1.0, 1.1), Duration::from_secs(1));
+        log.store(Vector2::new(2.0, 2.1), Duration::from_secs(2));
+        log.store(Vector2::new(3.0, 3.1), Duration::from_secs(3));
+        log.store(Vector2::new(4.0, 4.1), Duration::from_secs(4));
         log.cleanup(Duration::from_secs(1));
         let mut expected = PositionLog::new();
-        expected.push(Vector2::new(2.0, 2.1), Duration::from_secs(2));
-        expected.push(Vector2::new(3.0, 3.1), Duration::from_secs(3));
-        expected.push(Vector2::new(4.0, 4.1), Duration::from_secs(4));
+        expected.store(Vector2::new(2.0, 2.1), Duration::from_secs(2));
+        expected.store(Vector2::new(3.0, 3.1), Duration::from_secs(3));
+        expected.store(Vector2::new(4.0, 4.1), Duration::from_secs(4));
         assert_eq!(log.data, expected.data);
 
         let mut log = PositionLog::new();
-        log.push(Vector2::new(1.0, 1.1), Duration::from_secs(1));
-        log.push(Vector2::new(2.0, 2.1), Duration::from_secs(2));
-        log.push(Vector2::new(3.0, 3.1), Duration::from_secs(3));
-        log.push(Vector2::new(4.0, 4.1), Duration::from_secs(4));
+        log.store(Vector2::new(1.0, 1.1), Duration::from_secs(1));
+        log.store(Vector2::new(2.0, 2.1), Duration::from_secs(2));
+        log.store(Vector2::new(3.0, 3.1), Duration::from_secs(3));
+        log.store(Vector2::new(4.0, 4.1), Duration::from_secs(4));
         log.cleanup(Duration::from_secs(3));
         let mut expected = PositionLog::new();
-        expected.push(Vector2::new(4.0, 4.1), Duration::from_secs(4));
+        expected.store(Vector2::new(4.0, 4.1), Duration::from_secs(4));
         assert_eq!(log.data, expected.data);
 
         let mut log = PositionLog::new();
-        log.push(Vector2::new(1.0, 1.1), Duration::from_secs(1));
-        log.push(Vector2::new(2.0, 2.1), Duration::from_secs(2));
-        log.push(Vector2::new(3.0, 3.1), Duration::from_secs(3));
-        log.push(Vector2::new(4.0, 4.1), Duration::from_secs(4));
+        log.store(Vector2::new(1.0, 1.1), Duration::from_secs(1));
+        log.store(Vector2::new(2.0, 2.1), Duration::from_secs(2));
+        log.store(Vector2::new(3.0, 3.1), Duration::from_secs(3));
+        log.store(Vector2::new(4.0, 4.1), Duration::from_secs(4));
         log.cleanup(Duration::from_secs(10));
         assert_eq!(log.data, VecDeque::new());
     }
