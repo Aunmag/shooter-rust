@@ -1,3 +1,5 @@
+use std::slice::Iter;
+
 pub struct CircularVec<T: Sized> {
     data: Vec<T>,
     size: usize,
@@ -29,6 +31,10 @@ impl <T> CircularVec<T> {
         }
 
         self.next_push_index = self.next_push_index.wrapping_add(1) % self.size;
+    }
+
+    pub fn iter(&self) -> Iter<T> {
+        return self.data.iter();
     }
 }
 

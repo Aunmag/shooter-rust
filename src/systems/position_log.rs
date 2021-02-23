@@ -46,7 +46,6 @@ impl<'a> System<'a> for PositionLogSystem {
         self.last_run = Instant::now();
 
         let now = time.absolute_time();
-        let cleanup_before = utils::sub_duration(now, MAX_PING);
 
         for (transform, interpolation, log) in (&transforms, (&interpolations).maybe(), &mut log).join() {
             let mut position = transform.translation().xy();
@@ -57,7 +56,6 @@ impl<'a> System<'a> for PositionLogSystem {
             }
 
             log.store(position, now);
-            log.cleanup(cleanup_before)
         }
     }
 }
