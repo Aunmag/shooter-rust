@@ -16,9 +16,9 @@ struct Record {
     position: Vector2<f32>,
 }
 
-struct RecordTemp<'a> {
+struct RecordTemp {
     interval: Duration,
-    position: &'a Vector2<f32>,
+    position: Vector2<f32>,
 }
 
 impl PositionLog {
@@ -47,7 +47,7 @@ impl PositionLog {
                     if r1.as_ref().map_or(true, |r| r.interval > interval) {
                         r1.replace(RecordTemp {
                             interval,
-                            position: &record.position,
+                            position: record.position,
                         });
                     }
                 }
@@ -60,7 +60,7 @@ impl PositionLog {
                     if r2.as_ref().map_or(true, |r| r.interval > interval) {
                         r2.replace(RecordTemp {
                             interval,
-                            position: &record.position,
+                            position: record.position,
                         });
                     }
                 }
@@ -79,7 +79,7 @@ impl PositionLog {
 
             return Some(r2.position + (r1.position - r2.position) * ratio);
         } else {
-            return r1.or(r2).map(|r| *r.position);
+            return r1.or(r2).map(|r| r.position);
         }
     }
 }
