@@ -41,7 +41,7 @@ impl SimpleState for StartupState {
                 return Trans::None;
             }
             Completion::Complete => {
-                enable_fullscreen_mode(&data.world);
+                // enable_fullscreen_mode(&data.world);
                 complete_startup(&data.world);
                 return Trans::Switch(Box::new(HomeState::new(true)));
             }

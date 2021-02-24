@@ -1,14 +1,14 @@
 use std::slice::Iter;
 
-pub struct CircularVec<T: Sized> {
+pub struct RingVec<T: Sized> {
     data: Vec<T>,
     size: usize,
     next_push_index: usize,
 }
 
-impl <T> CircularVec<T> {
+impl <T> RingVec<T> {
     pub fn new(size: usize) -> Self {
-        return CircularVec {
+        return RingVec {
             data: Vec::<T>::with_capacity(size),
             size,
             next_push_index: 0,
@@ -44,7 +44,7 @@ mod tests {
 
     #[test]
     fn test_push() {
-        let mut vec = CircularVec::<i8>::new(3);
+        let mut vec = RingVec::<i8>::new(3);
         assert!(vec.data.is_empty());
 
         vec.push(11);
@@ -71,7 +71,7 @@ mod tests {
 
     #[test]
     fn test_push_empty() {
-        let mut vec = CircularVec::<i8>::new(0);
+        let mut vec = RingVec::<i8>::new(0);
         assert!(vec.data.is_empty());
 
         vec.push(11);
