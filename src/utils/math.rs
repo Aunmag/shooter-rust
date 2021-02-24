@@ -1,6 +1,10 @@
 use std::f32::consts::PI;
 use std::f32::consts::TAU;
 
+pub fn average(average: f64, range: f64, value: f64) -> f64 {
+    return (average * (range - 1.0) + value) / range;
+}
+
 pub fn angle(x1: f32, y1: f32, x2: f32, y2: f32) -> f32 {
     return (y1 - y2).atan2(x1 - x2);
 }

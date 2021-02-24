@@ -5,8 +5,10 @@ use std::net::SocketAddr;
 use std::net::UdpSocket;
 use std::time::Duration;
 use std::time::Instant;
+use crate::utils;
 
 const MESSAGE_RESEND_INTERVAL: Duration = Duration::from_millis(400); // TODO: Tweak
+const AVERAGE_PING_RANGE: f64 = 10.0; // TODO: Tweak
 
 pub struct Connection {
     status: ConnectionStatus,
@@ -18,6 +20,7 @@ pub struct Connection {
     next_incoming_message_id: u16,
     next_outgoing_message_id: u16,
     pub attached_external_id: Option<u16>,
+    average_ping: f64, // TODO: Check
 }
 
 pub enum ConnectionStatus {
@@ -28,6 +31,7 @@ pub enum ConnectionStatus {
 struct UnacknowledgedMessage {
     data: Vec<u8>,
     last_sent: Instant,
+    is_resent: bool,
 }
 
 impl Connection {
@@ -39,6 +43,7 @@ impl Connection {
             next_incoming_message_id: 0,
             next_outgoing_message_id: 0,
             attached_external_id: None,
+            average_ping: 0.0,
         };
     }
 
@@ -70,6 +75,7 @@ impl Connection {
                     UnacknowledgedMessage {
                         data: encoded,
                         last_sent: Instant::now(),
+                        is_resent: false,
                     },
                 );
             }
@@ -81,6 +87,7 @@ impl Connection {
             for message in self.unacknowledged_messages.values_mut() {
                 if message.last_sent.elapsed() > MESSAGE_RESEND_INTERVAL {
                     message.last_sent = Instant::now();
+                    message.is_resent = true;
 
                     if let Err(error) = send(socket, address, &message.data) {
                         self.disconnect(error);
@@ -123,7 +130,17 @@ impl Connection {
     }
 
     pub fn acknowledge_message(&mut self, id: u16) {
-        if self.unacknowledged_messages.remove(&id).is_none() {
+        if let Some(message) = self.unacknowledged_messages.remove(&id) {
+            // It's important to check that the message wasn't resent. Otherwise, the response time
+            // may be false.
+            if !message.is_resent {
+                self.average_ping = utils::math::average(
+                    self.average_ping,
+                    AVERAGE_PING_RANGE,
+                    message.last_sent.elapsed().as_secs_f64(),
+                );
+            }
+        } else {
             log::warn!(
                 "Got response for {} message but it was not an unacknowledged message",
                 id,
@@ -148,6 +165,10 @@ impl Connection {
             ConnectionStatus::Connected => true,
             ConnectionStatus::Disconnected(..) => false,
         };
+    }
+
+    pub fn get_average_ping(&self) -> f64 {
+        return self.average_ping;
     }
 }
 

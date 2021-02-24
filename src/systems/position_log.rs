@@ -14,15 +14,15 @@ use std::time::Instant;
 use crate::data::MAX_PING;
 use crate::utils;
 
-#[allow(clippy::integer_division)]
-const INTERVAL: Duration = Duration::from_millis(1000 / 25); // TODO: Maybe sync with TransformSync
-
 #[derive(SystemDesc)]
 pub struct PositionLogSystem {
     last_run: Instant,
 }
 
 impl PositionLogSystem {
+    #[allow(clippy::integer_division)]
+    pub const INTERVAL: Duration = Duration::from_millis(1000 / 25); // TODO: Maybe sync with TransformSync
+
     pub fn new() -> Self {
         return Self {
             last_run: Instant::now(),
@@ -39,7 +39,7 @@ impl<'a> System<'a> for PositionLogSystem {
     );
 
     fn run(&mut self, (time, transforms, interpolations, mut log): Self::SystemData) {
-        if self.last_run.elapsed() < INTERVAL {
+        if self.last_run.elapsed() < Self::INTERVAL {
             return;
         }
 
