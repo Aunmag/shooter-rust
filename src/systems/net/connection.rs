@@ -8,7 +8,7 @@ use std::time::Instant;
 use crate::utils;
 
 const MESSAGE_RESEND_INTERVAL: Duration = Duration::from_millis(400); // TODO: Tweak
-const AVERAGE_PING_RANGE: f64 = 10.0; // TODO: Tweak
+const AVERAGE_PING_RANGE_MAX: f64 = 10.0; // TODO: Tweak
 
 pub struct Connection {
     status: ConnectionStatus,
@@ -20,7 +20,8 @@ pub struct Connection {
     next_incoming_message_id: u16,
     next_outgoing_message_id: u16,
     pub attached_external_id: Option<u16>,
-    average_ping: f64, // TODO: Check
+    average_ping: f64,
+    average_ping_range: f64,
 }
 
 pub enum ConnectionStatus {
@@ -44,6 +45,7 @@ impl Connection {
             next_outgoing_message_id: 0,
             attached_external_id: None,
             average_ping: 0.0,
+            average_ping_range: 0.0,
         };
     }
 
@@ -136,9 +138,13 @@ impl Connection {
             if !message.is_resent {
                 self.average_ping = utils::math::average(
                     self.average_ping,
-                    AVERAGE_PING_RANGE,
-                    message.last_sent.elapsed().as_secs_f64(),
+                    self.average_ping_range,
+                    message.last_sent.elapsed().as_millis() as f64,
                 );
+
+                if self.average_ping_range < AVERAGE_PING_RANGE_MAX {
+                    self.average_ping_range += 1.0;
+                }
             }
         } else {
             log::warn!(
