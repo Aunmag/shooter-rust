@@ -18,6 +18,8 @@ use std::f32::consts::FRAC_PI_2;
 use std::f64::consts::FRAC_PI_8;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 const CHANGE_MOVEMENT_PROBABILITY: f64 = 1.0;
 const TURN_PROBABILITY: f64 = 2.0;
@@ -56,9 +58,11 @@ impl<'a> System<'a> for AiSystem {
         ReadStorage<'a, Ai>,
         ReadStorage<'a, Transform>,
         WriteStorage<'a, Actor>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (time, ais, transforms, mut actors): Self::SystemData) {
+    fn run(&mut self, (time, ais, transforms, mut actors, mut dt): Self::SystemData) {
+        let s = dt.start();
         let delta = time.delta_seconds() as f64;
         let change_movement_probability = CHANGE_MOVEMENT_PROBABILITY * delta;
         let turn_probability = TURN_PROBABILITY * delta;
@@ -87,5 +91,6 @@ impl<'a> System<'a> for AiSystem {
                 actor.rotation = 0.0;
             }
         }
+        dt.end("Ai", s);
     }
 }

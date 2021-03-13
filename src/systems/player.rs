@@ -14,6 +14,8 @@ use amethyst::ecs::prelude::SystemData;
 use amethyst::ecs::prelude::WriteStorage;
 use amethyst::input::InputHandler;
 use std::f32::consts::TAU;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 const ROTATION_SENSITIVITY: f32 = 0.01;
 
@@ -26,9 +28,11 @@ impl<'a> System<'a> for PlayerSystem {
         Read<'a, MouseInput>,
         ReadStorage<'a, Player>,
         WriteStorage<'a, Actor>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (input, input_mouse, players, mut actors): Self::SystemData) {
+    fn run(&mut self, (input, input_mouse, players, mut actors, mut dt): Self::SystemData) {
+        let s = dt.start();
         let rotation = (input_mouse.delta_x * ROTATION_SENSITIVITY) % TAU;
 
         for (actor, _) in (&mut actors, &players).join() {
@@ -57,6 +61,7 @@ impl<'a> System<'a> for PlayerSystem {
                     .unwrap_or(false),
             );
         }
+        dt.end("Player", s);
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::components::Actor;
 use crate::components::ActorActions;
 use crate::components::Weapon;
-use crate::resources::EntityMap;
+use crate::resources::{EntityMap, DebugTimer};
 use crate::resources::GameTask;
 use crate::resources::GameTaskResource;
 use crate::resources::Message;
@@ -502,6 +502,31 @@ impl<'a, 'b> SimpleState for GameState<'a, 'b> {
 
             if cursor.hide && is_key_down(&event, VirtualKeyCode::Tab) {
                 cursor.hide = false;
+            }
+
+            // 74 FPS, 19 FPS
+            if is_key_down(&event, VirtualKeyCode::Key1) {
+                let mut tasks = data.world.write_resource::<GameTaskResource>();
+                let mut entity_map = data.world.write_resource::<EntityMap>();
+
+                for _ in 0..2000 {
+                    tasks.push(GameTask::ActorSpawn {
+                        external_id: entity_map.generate_external_id(),
+                        position: Position::default(),
+                    });
+                }
+            }
+
+            if is_key_down(&event, VirtualKeyCode::Key2) {
+                let mut tasks = data.world.write_resource::<GameTaskResource>();
+                let mut entity_map = data.world.write_resource::<EntityMap>();
+
+                for _ in 0..500 {
+                    tasks.push(GameTask::ActorSpawn {
+                        external_id: entity_map.generate_external_id(),
+                        position: Position::default(),
+                    });
+                }
             }
         }
 

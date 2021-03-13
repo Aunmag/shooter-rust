@@ -20,6 +20,7 @@ use amethyst::ecs::Entities;
 use amethyst::ecs::Entity;
 use amethyst::renderer::debug_drawing::DebugLines;
 use amethyst::renderer::palette::Srgba;
+use crate::resources::DebugTimer;
 
 const PUSH_FACTOR: f32 = 0.00025;
 const VELOCITY_MIN: f32 = 5.0;
@@ -40,6 +41,7 @@ impl<'a> System<'a> for ProjectileSystem {
         ReadStorage<'a, Collision>,
         ReadStorage<'a, Transform>,
         Write<'a, GameTaskResource>,
+        Write<'a, DebugTimer>,
         Write<'a, DebugLines>,
     );
 
@@ -52,9 +54,11 @@ impl<'a> System<'a> for ProjectileSystem {
             collisions,
             transforms,
             mut tasks,
+            mut dt,
             mut debug
         ): Self::SystemData,
     ) {
+        let s = dt.start();
         let time_current = time.absolute_time();
         let time_previous = time_current.sub_safely(time.delta_time());
 
@@ -124,6 +128,8 @@ impl<'a> System<'a> for ProjectileSystem {
                 }
             }
         }
+
+        dt.end("Projectile", s);
     }
 }
 

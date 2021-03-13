@@ -21,6 +21,7 @@ use rand::SeedableRng;
 use rand_pcg::Pcg32;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
+use crate::resources::DebugTimer;
 
 const VELOCITY_DEVIATION_FACTOR: f32 = 0.1;
 const DIRECTION_DEVIATION: f32 = 0.02;
@@ -62,12 +63,14 @@ impl<'a> System<'a> for WeaponSystem {
         ReadStorage<'a, Transform>,
         Write<'a, GameTaskResource>,
         WriteStorage<'a, Weapon>,
+        Write<'a, DebugTimer>,
     );
 
     fn run(
         &mut self,
-        (entities, entity_map, time, actors, transforms, mut tasks, mut weapons): Self::SystemData,
+        (entities, entity_map, time, actors, transforms, mut tasks, mut weapons, mut dt): Self::SystemData,
     ) {
+        let s = dt.start();
         let query = (&entities, &actors, &transforms, &mut weapons).join();
 
         for (entity, actor, transform, weapon) in query {
@@ -85,5 +88,6 @@ impl<'a> System<'a> for WeaponSystem {
                 });
             }
         }
+        dt.end("Weapon", s);
     }
 }

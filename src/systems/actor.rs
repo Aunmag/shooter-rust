@@ -11,6 +11,8 @@ use amethyst::ecs::prelude::ReadStorage;
 use amethyst::ecs::prelude::System;
 use amethyst::ecs::prelude::SystemData;
 use amethyst::ecs::prelude::WriteStorage;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 #[derive(SystemDesc)]
 pub struct ActorSystem;
@@ -21,9 +23,11 @@ impl<'a> System<'a> for ActorSystem {
         ReadStorage<'a, Actor>,
         WriteStorage<'a, Interpolation>,
         WriteStorage<'a, Transform>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (time, actors, mut interpolations, mut transforms): Self::SystemData) {
+    fn run(&mut self, (time, actors, mut interpolations, mut transforms, mut dt): Self::SystemData) {
+        let s = dt.start();
         let velocity = Actor::MOVEMENT_VELOCITY * time.delta_seconds();
 
         for (actor, transform, interpolation) in (
@@ -69,6 +73,8 @@ impl<'a> System<'a> for ActorSystem {
                 interpolation.shift(shift.x, shift.y);
             }
         }
+
+        dt.end("Actor", s);
     }
 }
 

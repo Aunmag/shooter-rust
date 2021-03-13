@@ -14,6 +14,7 @@ use amethyst::ecs::prelude::Write;
 use amethyst::ecs::WriteExpect;
 use std::io::ErrorKind;
 use std::net::SocketAddr;
+use crate::resources::DebugTimer;
 
 #[derive(SystemDesc)]
 pub struct MessageReceiveSystem {
@@ -132,9 +133,11 @@ impl<'a> System<'a> for MessageReceiveSystem {
         Write<'a, GameTaskResource>,
         Write<'a, PositionUpdateResource>,
         WriteExpect<'a, NetResource>,
+        Write<'a, DebugTimer>
     );
 
-    fn run(&mut self, (mut tasks, mut position_updates, mut net): Self::SystemData) {
+    fn run(&mut self, (mut tasks, mut position_updates, mut net, mut dt): Self::SystemData) {
+        let s = dt.start();
         let mut responses = Vec::new(); // TODO: Find a way send responses without vector allocations
 
         loop {
@@ -207,5 +210,7 @@ impl<'a> System<'a> for MessageReceiveSystem {
         for (address, message) in responses {
             net.send_to(&address, message);
         }
+
+        dt.end("MessageReceive", s);
     }
 }

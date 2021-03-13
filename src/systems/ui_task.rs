@@ -9,6 +9,7 @@ use amethyst::ecs::prelude::WriteStorage;
 use amethyst::ui::UiText;
 use amethyst::ui::UiTransform;
 use std::collections::HashMap;
+use crate::resources::DebugTimer;
 
 #[derive(SystemDesc)]
 pub struct UiTaskSystem;
@@ -39,9 +40,11 @@ impl<'a> System<'a> for UiTaskSystem {
         Write<'a, UiTaskResource>,
         WriteStorage<'a, UiText>,
         WriteStorage<'a, UiTransform>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (mut tasks, mut texts, mut transforms): Self::SystemData) {
+    fn run(&mut self, (mut tasks, mut texts, mut transforms, mut dt): Self::SystemData) {
+        let s = dt.start();
         if tasks.is_empty() {
             return;
         }
@@ -76,5 +79,6 @@ impl<'a> System<'a> for UiTaskSystem {
         }
 
         tasks.clear();
+        dt.end("UiTask", s);
     }
 }

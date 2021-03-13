@@ -9,6 +9,8 @@ use amethyst::ecs::prelude::WriteStorage;
 use amethyst::ui::UiText;
 use amethyst::ui::UiTransform;
 use amethyst::window::ScreenDimensions;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 /// Determines which screen min(width, height) font sizes are set to by default
 const ORIGIN_SCREEN_SIZE_QUAD: f32 = 720.0;
@@ -72,9 +74,11 @@ impl<'a> System<'a> for UiResizeSystem {
         ReadExpect<'a, ScreenDimensions>,
         WriteStorage<'a, UiText>,
         WriteStorage<'a, UiTransform>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (game_state, screen, mut texts, mut transforms): Self::SystemData) {
+    fn run(&mut self, (game_state, screen, mut texts, mut transforms, mut dt): Self::SystemData) {
+        let s = dt.start();
         if game_state.is_loaded {
             let size_x = screen.width();
             let size_y = screen.height();
@@ -93,5 +97,6 @@ impl<'a> System<'a> for UiResizeSystem {
                 self.last_size_quad = size_quad;
             }
         }
+        dt.end("UiResize", s);
     }
 }

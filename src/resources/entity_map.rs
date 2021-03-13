@@ -20,13 +20,13 @@ impl EntityMap {
         let previous_external_id = self.by_internal.insert(entity.id(), external_id);
         let previous_entity = self.by_external.insert(external_id, entity);
 
-        if previous_external_id.is_some() || previous_entity.is_some() {
-            log::warn!(
-                "Entity({}) with external ID = {} was already stored",
-                entity.id(),
-                external_id,
-            );
-        }
+        // if previous_external_id.is_some() || previous_entity.is_some() {
+        //     log::warn!(
+        //         "Entity({}) with external ID = {} was already stored",
+        //         entity.id(),
+        //         external_id,
+        //     );
+        // }
     }
 
     pub fn generate_external_id(&mut self) -> u16 {

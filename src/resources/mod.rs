@@ -1,3 +1,4 @@
+mod debug_timer;
 mod entity_map;
 mod game_status;
 mod game_task;
@@ -9,6 +10,7 @@ mod sprite;
 mod ui_task;
 mod wallpaper;
 
+pub use self::debug_timer::*;
 pub use self::entity_map::*;
 pub use self::game_status::*;
 pub use self::game_task::*;

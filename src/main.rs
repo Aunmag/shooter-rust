@@ -61,6 +61,14 @@ const FRAME_RATE: u32 = 144;
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
 
+    log::debug!("Actor: {}", std::mem::size_of::<crate::components::Actor>());
+    log::debug!("Ai: {}", std::mem::size_of::<crate::components::Ai>());
+    log::debug!("Collision: {}", std::mem::size_of::<crate::components::Collision>());
+    log::debug!("Interpolation: {}", std::mem::size_of::<crate::components::Interpolation>());
+    log::debug!("Player: {}", std::mem::size_of::<crate::components::Player>());
+    log::debug!("Projectile: {}", std::mem::size_of::<crate::components::Projectile>());
+    log::debug!("Weapon: {}", std::mem::size_of::<crate::components::Weapon>());
+
     let root = application_root_dir()?;
     let game_data = GameDataBuilder::default()
         .with_bundle(TransformBundle::new())?

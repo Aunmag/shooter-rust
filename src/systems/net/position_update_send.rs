@@ -13,6 +13,8 @@ use amethyst::ecs::Entities;
 use amethyst::ecs::ReadExpect;
 use std::collections::HashMap;
 use std::time::Instant;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 #[derive(SystemDesc)]
 pub struct PositionUpdateSendSystem {
@@ -43,12 +45,15 @@ impl<'a> System<'a> for PositionUpdateSendSystem {
         ReadExpect<'a, NetResource>,
         ReadStorage<'a, Actor>,
         ReadStorage<'a, Transform>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (entities, entity_map, net, actors, transforms): Self::SystemData) {
+    fn run(&mut self, (entities, entity_map, net, actors, transforms, mut dt): Self::SystemData) {
         if self.last_sent.elapsed() < POSITION_UPDATE_INTERVAL {
             return;
         }
+
+        let s = dt.start();
 
         let mut clean_cache = HashMap::with_capacity(self.cache.capacity());
 
@@ -75,5 +80,6 @@ impl<'a> System<'a> for PositionUpdateSendSystem {
 
         std::mem::swap(&mut self.cache, &mut clean_cache);
         self.last_sent = Instant::now();
+        dt.end("PositionUpdateSend", s);
     }
 }

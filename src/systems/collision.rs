@@ -8,6 +8,8 @@ use amethyst::ecs::prelude::System;
 use amethyst::ecs::prelude::SystemData;
 use amethyst::ecs::prelude::WriteStorage;
 use amethyst::ecs::Entities;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 #[derive(SystemDesc)]
 pub struct CollisionSystem {
@@ -35,9 +37,11 @@ impl<'a> System<'a> for CollisionSystem {
         Entities<'a>,
         ReadStorage<'a, Collision>,
         WriteStorage<'a, Transform>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (e, c, mut t): Self::SystemData) {
+    fn run(&mut self, (e, c, mut t, mut dt): Self::SystemData) {
+        let s = dt.start();
         let mut last_checked_entity_id = 0;
         let mut solutions = Vec::with_capacity(self.previous_collisions_count * 2);
 
@@ -94,6 +98,8 @@ impl<'a> System<'a> for CollisionSystem {
                 }
             }
         }
+
+        dt.end("Collision", s);
     }
 }
 

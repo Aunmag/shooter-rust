@@ -9,7 +9,7 @@ codegen-units = 1
 lto = "fat"
 
 [dependencies]
-amethyst = { version = "0.15.1", features = ["vulkan", "tiles"] }
+amethyst = { version = "0.15.1", features = ["vulkan", "tiles", "no-slow-safety-checks"] }
 bincode = "1.3"
 bitflags = "1.2"
 log = "0.4"

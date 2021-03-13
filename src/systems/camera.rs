@@ -8,6 +8,8 @@ use amethyst::ecs::prelude::SystemData;
 use amethyst::ecs::prelude::WriteStorage;
 use amethyst::renderer::Camera;
 use amethyst::window::ScreenDimensions;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 const OFFSET_RATIO: f32 = 0.25;
 
@@ -31,9 +33,11 @@ impl<'a> System<'a> for CameraSystem {
         ReadExpect<'a, ScreenDimensions>,
         WriteStorage<'a, Camera>,
         WriteStorage<'a, Transform>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (screen, mut cameras, mut transforms): Self::SystemData) {
+    fn run(&mut self, (screen, mut cameras, mut transforms, mut dt): Self::SystemData) {
+        let s = dt.start();
         let screen_size_x = screen.width();
         let screen_size_y = screen.height();
 
@@ -61,6 +65,8 @@ impl<'a> System<'a> for CameraSystem {
                 self.screen_size_y = screen_size_y;
             }
         }
+
+        dt.end("Camera", s);
     }
 }
 

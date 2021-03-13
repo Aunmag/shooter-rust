@@ -9,6 +9,8 @@ use amethyst::ecs::prelude::WriteStorage;
 use amethyst::renderer::Camera;
 use amethyst::tiles::MortonEncoder;
 use amethyst::tiles::TileMap;
+use amethyst::ecs::prelude::Write;
+use crate::resources::DebugTimer;
 
 #[derive(SystemDesc)]
 pub struct TerrainSystem;
@@ -18,9 +20,11 @@ impl<'a> System<'a> for TerrainSystem {
         ReadStorage<'a, Camera>,
         ReadStorage<'a, TileMap<Terrain, MortonEncoder>>,
         WriteStorage<'a, Transform>,
+        Write<'a, DebugTimer>,
     );
 
-    fn run(&mut self, (cameras, tiles, mut transforms): Self::SystemData) {
+    fn run(&mut self, (cameras, tiles, mut transforms, mut dt): Self::SystemData) {
+        let s = dt.start();
         let mut x = 0.0;
         let mut y = 0.0;
 
@@ -39,6 +43,8 @@ impl<'a> System<'a> for TerrainSystem {
             transform.set_translation_x(x);
             transform.set_translation_y(y);
         }
+
+        dt.end("Terrain", s);
     }
 }
 
