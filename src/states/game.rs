@@ -504,27 +504,27 @@ impl<'a, 'b> SimpleState for GameState<'a, 'b> {
                 cursor.hide = false;
             }
 
-            // 74 FPS, 19 FPS
+            // 144 FPS, 35 FPS
             if is_key_down(&event, VirtualKeyCode::Key1) {
                 let mut tasks = data.world.write_resource::<GameTaskResource>();
-                let mut entity_map = data.world.write_resource::<EntityMap>();
 
                 for _ in 0..2000 {
                     tasks.push(GameTask::ActorSpawn {
-                        external_id: entity_map.generate_external_id(),
+                        entity: data.world.entities().create(),
                         position: Position::default(),
+                        actor_type: crate::components::ActorType::HUMAN,
                     });
                 }
             }
 
             if is_key_down(&event, VirtualKeyCode::Key2) {
                 let mut tasks = data.world.write_resource::<GameTaskResource>();
-                let mut entity_map = data.world.write_resource::<EntityMap>();
 
                 for _ in 0..500 {
                     tasks.push(GameTask::ActorSpawn {
-                        external_id: entity_map.generate_external_id(),
+                        entity: data.world.entities().create(),
                         position: Position::default(),
+                        actor_type: crate::components::ActorType::HUMAN,
                     });
                 }
             }
